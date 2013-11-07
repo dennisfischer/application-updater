@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.geometry.Point3D?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<AnchorPane id="AnchorPane" maxHeight="-1.0" maxWidth="-1.0" minHeight="-1.0" minWidth="-1.0" pickOnBounds="false"
+            snapToPixel="true" style="" xmlns:fx="http://javafx.com/fxml/1"
+            xmlns="http://javafx.com/javafx/2.2">
+    <Button fx:id="menu" visible="false"/>
+    <Button fx:id="fullscreen" visible="false"/>
+    <GridPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
+              AnchorPane.topAnchor="0.0">
+        <columnConstraints>
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="-1.0" prefWidth="-1.0"/>
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-1.0" prefWidth="-1.0"/>
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-1.0" prefWidth="-1.0"/>
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-1.0" prefWidth="-1.0"/>
+        </columnConstraints>
+        <padding>
+            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+        </padding>
+        <rowConstraints>
+            <RowConstraints maxHeight="-Infinity" minHeight="-1.0" prefHeight="-1.0" vgrow="SOMETIMES"/>
+            <RowConstraints vgrow="SOMETIMES"/>
+            <RowConstraints maxHeight="-Infinity" minHeight="-1.0" prefHeight="-1.0" vgrow="SOMETIMES"/>
+        </rowConstraints>
+        <Button fx:id="maximize" mnemonicParsing="false" pickOnBounds="true" prefHeight="30.0" prefWidth="34.0"
+                styleClass="decoration-button-maximize" text="" GridPane.columnIndex="2" GridPane.rowIndex="0"/>
+        <Button fx:id="close" mnemonicParsing="false" pickOnBounds="true" prefHeight="30.0" prefWidth="34.0"
+                styleClass="decoration-button-close" text="" GridPane.columnIndex="3" GridPane.rowIndex="0">
+            <rotationAxis>
+                <Point3D/>
+            </rotationAxis>
+        </Button>
+        <Button fx:id="minimize" mnemonicParsing="false" pickOnBounds="true" prefHeight="30.0" prefWidth="34.0"
+                style="" styleClass="decoration-button-minimize" text="" GridPane.columnIndex="1"
+                GridPane.rowIndex="0"/>
+        <Button fx:id="resize" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false"
+                mouseTransparent="true" pickOnBounds="true" prefHeight="10.0" prefWidth="10.0"
+                styleClass="decoration-button-resize" text="" GridPane.columnIndex="3"
+                GridPane.halignment="RIGHT" GridPane.rowIndex="2"/>
+    </GridPane>
+</AnchorPane>
