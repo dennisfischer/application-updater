@@ -47,11 +47,13 @@ public class GUIController {
 	@FXML
 	void checkLater(final ActionEvent event) {
 		launcher.startVersion(launcher.getCurrentVersion());
+		System.exit(0);
 	}
 
 	@FXML
 	void skipUpdate(final ActionEvent event) {
 		launcher.startVersion(launcher.getCurrentVersion());
+		System.exit(0);
 	}
 
 	@FXML
@@ -71,6 +73,7 @@ public class GUIController {
 				try {
 					launcher.getRepository().upgradeInstallation(launcher.getVersions());
 					launcher.startVersion(launcher.getVersions().get(launcher.getVersions().size() - 1).getVersion());
+					System.exit(0);
 				} catch (Exception e) {
 					LOGGER.error("Exception", e);
 					Platform.runLater(new Runnable() {

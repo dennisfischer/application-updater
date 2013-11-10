@@ -28,8 +28,7 @@ public class Launcher {
 	private final Repository    repository;
 	private       List<Version> versions;
 
-	private Launcher(final String updateFile, final String dataDir, final String appDir, final String currentVersion)
-	throws MalformedURLException {
+	private Launcher(final String updateFile, final String dataDir, final String appDir, final String currentVersion) throws MalformedURLException {
 		this.updateFile = updateFile;
 		this.dataDir = dataDir;
 		this.appDir = appDir;
@@ -72,25 +71,29 @@ public class Launcher {
 		return Collections.unmodifiableList(versions);
 	}
 
-	public void startVersion(final String version) {
+	public Process startVersion(final String version) {
 		final String currentDir = Paths.get("").toAbsolutePath().toString();
 		final String cmd = String.format("\"%s/%s/SimpleJavaYoutubeUploader.jar\"", currentDir, version);
-		repository.forkJarProcess(cmd);
-		System.exit(0);
+		return repository.forkJarProcess(cmd);
 	}
 
 	public static void main(final String... args) {
 		try {
 			final String current = getCurrrent();
+			Application.launch(DummyGUI.class);
 
-			final Launcher launcher = new Launcher("http://dev.chaosfisch.com/nightly/test/updates.json",
-			                                       System.getProperty("user.home") + "/SimpleJavaYoutubeUploader/",
-			                                       Paths.get("").toAbsolutePath().toString(), current);
+			final Launcher launcher = new Launcher("http://dev.chaosfisch.com/updates/updates.json", System.getProperty("user.home") + "/SimpleJavaYoutubeUploader/", Paths
+					.get("")
+					.toAbsolutePath()
+					.toString(), current);
+
+			final Process process = launcher.startVersion(current);
+
 			if (launcher.hasUpdate()) {
+				process.destroy();
 				launcher.startUpdate();
 			} else {
 				LOGGER.info("Up-To-Date");
-				launcher.startVersion("v3.1.0.11");
 			}
 		} catch (IOException e) {
 			LOGGER.warn("Exception in Launcher", e);

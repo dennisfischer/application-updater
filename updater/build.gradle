@@ -26,11 +26,8 @@ configurations {
 
 dependencies {
     compile 'ch.qos.logback:logback-classic:1.0.9', 'com.google.code.gson:gson:2.2.2',
-            'com.google.guava:guava:14+', 'com.google.inject:guice:3.0', 'com.google.inject.extensions:guice-assistedinject:3.0',
-            'com.google.inject.extensions:guice-multibindings:3.0', 'commons-configuration:commons-configuration:+'
+            'com.google.guava:guava:14+'
     compile files('lib/Undecorator.jar')
-
-    p200AntTask files('lib/p200ant.jar')
 
     providedCompile files("$javaFxHome/lib/jfxrt.jar")
 }
@@ -49,13 +46,20 @@ compileJava {
 }
 
 jar {
-    archiveName = "Updater.jar"
+    archiveName = "SimpleJavaYoutubeUploader.jar"
+}
+
+
+task launch4j(type: Exec) {
+    new File("$buildDir/launch4j").mkdirs()
+    workingDir file("$buildDir/launch4j")
+    commandLine 'C:/Program Files (x86)/Launch4j/launch4jc.exe', file('/launch4j.xml')
 }
 
 
 task javaFXPackager(type: Exec) {
     commandLine = [
-            'C:/Program Files/Java/jdk1.7.0_40/bin/javafxpackager.exe',
+            'C:/Program Files/Java/jdk1.7.0_45/bin/javafxpackager.exe',
             '-createjar',
             '-srcdir',
             sourceSets.main.output.classesDir,
@@ -82,10 +86,12 @@ task copyTask(type: Copy) {
 task distribute(type: Zip) {
     baseName 'updater'
     from(jar)
+    from("$buildDir/launch4j")
     into("lib") {
         from(project.configurations.runtime)
     }
 }
 
+distribute.dependsOn launch4j
 distribute.dependsOn javaFXPackager
 javaFXPackager.dependsOn copyTask

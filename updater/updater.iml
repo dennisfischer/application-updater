@@ -10,22 +10,12 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" exported="" name="aopalliance-1.0" level="project" />
-    <orderEntry type="library" exported="" name="guice-assistedinject-3.0" level="project" />
-    <orderEntry type="library" exported="" name="cglib-2.2.1-v20090111" level="project" />
     <orderEntry type="library" exported="" name="logback-classic-1.0.9" level="project" />
-    <orderEntry type="library" exported="" name="javax.inject-1" level="project" />
     <orderEntry type="library" exported="" name="gson-2.2.2" level="project" />
     <orderEntry type="library" exported="" name="slf4j-api-1.7.2" level="project" />
-    <orderEntry type="library" exported="" name="commons-logging-1.1.1" level="project" />
     <orderEntry type="library" exported="" name="guava-14.0.1" level="project" />
-    <orderEntry type="library" exported="" name="commons-lang-2.6" level="project" />
     <orderEntry type="library" exported="" name="logback-core-1.0.9" level="project" />
-    <orderEntry type="library" exported="" name="asm-3.1" level="project" />
-    <orderEntry type="library" exported="" name="guice-multibindings-3.0" level="project" />
-    <orderEntry type="library" exported="" name="guice-3.0" level="project" />
     <orderEntry type="library" exported="" name="Undecorator" level="project" />
-    <orderEntry type="library" exported="" name="commons-configuration-1.10" level="project" />
   </component>
 </module>
 

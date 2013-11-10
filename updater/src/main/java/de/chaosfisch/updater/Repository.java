@@ -43,7 +43,9 @@ public class Repository {
 	}
 
 	public Process forkJarProcess(final String cmd) {
-		final String javaBin = String.format("%s/bin/java%s", System.getProperty("java.home"), PlatformUtil.isWindows() ? ".exe" : "");
+		final String javaBin = String.format("%s/bin/java%s", System.getProperty("java.home"), PlatformUtil.isWindows() ?
+																							   ".exe" :
+																							   "");
 		try {
 			final ProcessBuilder processBuilder = new ProcessBuilder(javaBin, "-jar", cmd);
 			processBuilder.redirectErrorStream(true);
@@ -146,7 +148,8 @@ public class Repository {
 		if (!updatedDataDirectory.exists()) {
 			Files.createDirectories(Paths.get(updatedDataDirectory.toURI()));
 		}
-		Files.walkFileTree(Paths.get(dataDirectory.toURI()), new Repository.CopyFileVisitor(Paths.get(updatedDataDirectory.toURI())));
+		Files.walkFileTree(Paths.get(dataDirectory.toURI()), new Repository.CopyFileVisitor(Paths.get(updatedDataDirectory
+				.toURI())));
 	}
 
 	private void copyApp(final String versionName) throws IOException {
@@ -157,7 +160,8 @@ public class Repository {
 			Files.createDirectories(Paths.get(updatedAppDirectory.toURI()));
 		}
 
-		Files.walkFileTree(Paths.get(appDirectory.toURI()), new Repository.CopyFileVisitor(Paths.get(updatedAppDirectory.toURI())));
+		Files.walkFileTree(Paths.get(appDirectory.toURI()), new Repository.CopyFileVisitor(Paths.get(updatedAppDirectory
+				.toURI())));
 	}
 
 	private void downloadVersion(final Version version) throws IOException {
@@ -175,7 +179,7 @@ public class Repository {
 		conection.connect();
 		final int lenghtOfFile = conection.getContentLength();
 		try (final InputStream input = new BufferedInputStream(zipPackage.openStream(), 8192);
-		     final OutputStream output = new FileOutputStream(file)) {
+			 final OutputStream output = new FileOutputStream(file)) {
 			int total = 0;
 			final byte[] data = new byte[65536];
 			int count;
