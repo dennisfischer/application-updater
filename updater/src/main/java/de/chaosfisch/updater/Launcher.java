@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
+import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collections;
@@ -27,6 +28,7 @@ public class Launcher {
 	private final String        currentVersion;
 	private final Repository    repository;
 	private       List<Version> versions;
+	private       GUI           gui;
 
 	private Launcher(final String updateFile, final String dataDir, final String appDir, final String currentVersion) throws MalformedURLException {
 		this.updateFile = updateFile;
@@ -42,9 +44,15 @@ public class Launcher {
 		return !versions.isEmpty();
 	}
 
-	private void startUpdate() {
-		GUI.setLauncher(this);
-		Application.launch(GUI.class, dataDir, appDir, currentVersion);
+	private void startUpdater() {
+		Thread thread = new Thread(new Runnable() {
+			@Override
+			public void run() {
+				GUI.setLauncher(Launcher.this);
+				Application.launch(GUI.class, dataDir, appDir, currentVersion);
+			}
+		});
+		thread.start();
 	}
 
 	public String getUpdateFile() {
@@ -74,30 +82,43 @@ public class Launcher {
 	public Process startVersion(final String version) {
 		final String currentDir = Paths.get("").toAbsolutePath().toString();
 		final String cmd = String.format("\"%s/%s/SimpleJavaYoutubeUploader.jar\"", currentDir, version);
+
+		if (!Files.exists(Paths.get(cmd.substring(1, cmd.length() - 1)))) {
+			return null;
+		}
+
 		return repository.forkJarProcess(cmd);
 	}
 
-	public static void main(final String... args) {
+	public static void main(final String... args) throws Exception {
 		try {
 			final String current = getCurrrent();
-			Application.launch(DummyGUI.class);
 
 			final Launcher launcher = new Launcher("http://dev.chaosfisch.com/updates/updates.json", System.getProperty("user.home") + "/SimpleJavaYoutubeUploader/", Paths
 					.get("")
 					.toAbsolutePath()
 					.toString(), current);
+			launcher.startUpdater();
 
 			final Process process = launcher.startVersion(current);
 
 			if (launcher.hasUpdate()) {
-				process.destroy();
-				launcher.startUpdate();
+				LOGGER.info("Newer version existing!");
+				if (null != process) {
+					process.destroy();
+				}
+				launcher.goGUI();
 			} else {
 				LOGGER.info("Up-To-Date");
+				System.exit(0);
 			}
 		} catch (IOException e) {
 			LOGGER.warn("Exception in Launcher", e);
 		}
+	}
+
+	private void goGUI() throws Exception {
+		gui.go();
 	}
 
 	private static String getCurrrent() {
@@ -120,6 +141,10 @@ public class Launcher {
 		});
 
 		return fileList.get(fileList.size() - 1).getName();
+	}
+
+	public void setGUI(final GUI gui) {
+		this.gui = gui;
 	}
 
 	private static class VersionFilter implements FileFilter {

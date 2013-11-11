@@ -1,7 +1,5 @@
 package de.chaosfisch.updater.unzip;
 
-import com.google.common.io.Files;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -46,8 +44,10 @@ public class UnZip {
 	/**
 	 * Unzip it
 	 *
-	 * @param zipFileName  input zip file
-	 * @param outputFolder zip file output folder
+	 * @param zipFileName
+	 * 		input zip file
+	 * @param outputFolder
+	 * 		zip file output folder
 	 */
 	public void unzip(final String zipFileName, final String outputFolder) throws IOException {
 
@@ -55,7 +55,7 @@ public class UnZip {
 
 		final File folder = new File(outputFolder);
 		if (!folder.exists()) {
-			Files.createParentDirs(folder);
+			folder.mkdirs();
 		}
 
 		final int total;
@@ -72,19 +72,22 @@ public class UnZip {
 			while (null != ze) {
 
 				final String fileName = ze.getName();
-				final File newFile = new File(String.format("%s%s%s", outputFolder, File.separator, fileName));
+				final File newFile = new File(String.format("%s/%s", outputFolder, fileName));
 
 				fireEvent(UnZip.Event.UNZIP_FILE, fileName);
 
 				processed++;
 				fireEvent(UnZip.Event.UNZIP_PROGRESS, processed / (float) total);
 
-				Files.createParentDirs(newFile);
-
-				try (FileOutputStream fos = new FileOutputStream(newFile)) {
-					int len;
-					while (0 < (len = zis.read(buffer))) {
-						fos.write(buffer, 0, len);
+				if (ze.isDirectory()) {
+					newFile.mkdirs();
+				}
+				if (!newFile.isDirectory()) {
+					try (FileOutputStream fos = new FileOutputStream(newFile)) {
+						int len;
+						while (0 < (len = zis.read(buffer))) {
+							fos.write(buffer, 0, len);
+						}
 					}
 				}
 				ze = zis.getNextEntry();

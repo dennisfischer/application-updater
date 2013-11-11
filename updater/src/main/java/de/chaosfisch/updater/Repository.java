@@ -148,8 +148,10 @@ public class Repository {
 		if (!updatedDataDirectory.exists()) {
 			Files.createDirectories(Paths.get(updatedDataDirectory.toURI()));
 		}
-		Files.walkFileTree(Paths.get(dataDirectory.toURI()), new Repository.CopyFileVisitor(Paths.get(updatedDataDirectory
-				.toURI())));
+		if (dataDirectory.exists()) {
+			Files.walkFileTree(Paths.get(dataDirectory.toURI()), new Repository.CopyFileVisitor(Paths.get(updatedDataDirectory
+					.toURI())));
+		}
 	}
 
 	private void copyApp(final String versionName) throws IOException {
@@ -160,8 +162,10 @@ public class Repository {
 			Files.createDirectories(Paths.get(updatedAppDirectory.toURI()));
 		}
 
-		Files.walkFileTree(Paths.get(appDirectory.toURI()), new Repository.CopyFileVisitor(Paths.get(updatedAppDirectory
-				.toURI())));
+		if (appDirectory.exists()) {
+			Files.walkFileTree(Paths.get(appDirectory.toURI()), new Repository.CopyFileVisitor(Paths.get(updatedAppDirectory
+					.toURI())));
+		}
 	}
 
 	private void downloadVersion(final Version version) throws IOException {
