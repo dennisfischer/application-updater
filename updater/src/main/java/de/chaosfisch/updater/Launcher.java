@@ -45,7 +45,7 @@ public class Launcher {
 	}
 
 	private void startUpdater() {
-		Thread thread = new Thread(new Runnable() {
+		final Thread thread = new Thread(new Runnable() {
 			@Override
 			public void run() {
 				GUI.setLauncher(Launcher.this);
@@ -107,6 +107,7 @@ public class Launcher {
 				if (null != process) {
 					process.destroy();
 				}
+
 				launcher.goGUI();
 			} else {
 				LOGGER.info("Up-To-Date");
@@ -118,6 +119,10 @@ public class Launcher {
 	}
 
 	private void goGUI() throws Exception {
+		while (null == gui && Thread.currentThread().isAlive()) {
+			Thread.sleep(100);
+			LOGGER.info("Waiting for gui Initialization");
+		}
 		gui.go();
 	}
 
