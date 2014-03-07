@@ -6,7 +6,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
-import java.io.FileFilter;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -17,18 +16,17 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.regex.Pattern;
 
 public class Launcher {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(Launcher.class);
-	private final String        updateFile;
-	private final String        dataDir;
-	private final String        appDir;
-	private final String        currentVersion;
-	private final Repository    repository;
-	private       List<Version> versions;
-	private       GUI           gui;
+	private final String updateFile;
+	private final String dataDir;
+	private final String appDir;
+	private final String currentVersion;
+	private final Repository repository;
+	private List<Version> versions;
+	private GUI gui;
 
 	private Launcher(final String updateFile, final String dataDir, final String appDir, final String currentVersion) throws MalformedURLException {
 		this.updateFile = updateFile;
@@ -127,7 +125,7 @@ public class Launcher {
 	}
 
 	private static String getCurrrent() {
-		final File[] files = Paths.get("").toAbsolutePath().toFile().listFiles(new Launcher.VersionFilter());
+		final File[] files = Paths.get("").toAbsolutePath().toFile().listFiles(new VersionFilter());
 		final List<File> fileList = Arrays.asList(files);
 		if (fileList.isEmpty()) {
 			return "v3.0.0.0";
@@ -152,15 +150,4 @@ public class Launcher {
 		this.gui = gui;
 	}
 
-	private static class VersionFilter implements FileFilter {
-		private final Pattern pattern = Pattern.compile("^(.*)[\\\\|/]v\\d+.\\d+.\\d+.\\d+$");
-
-		VersionFilter() {
-		}
-
-		@Override
-		public boolean accept(final File pathname) {
-			return pathname.isDirectory() && pattern.matcher(pathname.toString()).find();
-		}
-	}
 }

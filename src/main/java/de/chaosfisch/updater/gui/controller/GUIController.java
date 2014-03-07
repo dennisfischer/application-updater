@@ -45,19 +45,19 @@ public class GUIController {
 	private static final Logger LOGGER = LoggerFactory.getLogger(GUIController.class);
 
 	@FXML
-	void checkLater(final ActionEvent event) {
+	public void checkLater(final ActionEvent event) {
 		launcher.startVersion(launcher.getCurrentVersion());
 		System.exit(0);
 	}
 
 	@FXML
-	void skipUpdate(final ActionEvent event) {
+	public void skipUpdate(final ActionEvent event) {
 		launcher.startVersion(launcher.getCurrentVersion());
 		System.exit(0);
 	}
 
 	@FXML
-	void updateApplication(final ActionEvent event) {
+	public void updateApplication(final ActionEvent event) {
 		Platform.runLater(new Runnable() {
 			@Override
 			public void run() {
@@ -72,6 +72,7 @@ public class GUIController {
 			public void run() {
 				try {
 					launcher.getRepository().upgradeInstallation(launcher.getVersions());
+					launcher.getRepository().cleanUp();
 					launcher.startVersion(launcher.getVersions().get(launcher.getVersions().size() - 1).getVersion());
 					System.exit(0);
 				} catch (Exception e) {
@@ -94,7 +95,7 @@ public class GUIController {
 	}
 
 	@FXML
-	void initialize() {
+	public void initialize() {
 		assert null != details : "fx:id=\"details\" was not injected: check your FXML file 'Launcher.fxml'.";
 		assert null != progressBar : "fx:id=\"progressBar\" was not injected: check your FXML file 'Launcher.fxml'.";
 		assert null != statusLabel : "fx:id=\"statusLabel\" was not injected: check your FXML file 'Launcher.fxml'.";

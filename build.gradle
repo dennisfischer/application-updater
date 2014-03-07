@@ -14,19 +14,18 @@ apply plugin: 'java'
 apply plugin: 'application'
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
-version = "0.2";
+version = "0.4";
 mainClassName = 'de.chaosfisch.updater.Launcher'
 
 configurations {
     //we do not want to have jfxrt.jar in the classpath when creating the jar,
     //therefore a seperate configuration is required
     providedCompile
-    p200AntTask
 }
 
 dependencies {
-    compile 'ch.qos.logback:logback-classic:1.0.9', 'com.google.code.gson:gson:2.2.2',
-            'com.google.guava:guava:14+'
+    compile 'ch.qos.logback:logback-classic:+', 'com.google.code.gson:gson:+',
+            'com.google.guava:guava:+'
     compile files('lib/Undecorator.jar')
 
     providedCompile files("$javaFxHome/lib/jfxrt.jar")
@@ -59,7 +58,7 @@ task launch4j(type: Exec) {
 
 task javaFXPackager(type: Exec) {
     commandLine = [
-            'C:/Program Files/Java/jdk1.7.0_45/bin/javafxpackager.exe',
+            'C:/Program Files/Java/jdk1.7.0_51/bin/javafxpackager.exe',
             '-createjar',
             '-srcdir',
             sourceSets.main.output.classesDir,

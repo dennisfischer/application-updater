@@ -14,8 +14,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class Repository {
 
@@ -55,6 +54,78 @@ public class Repository {
 			LOGGER.error("Couldn't start application", e);
 		}
 		return null;
+	}
+
+	public static void removeRecursive(Path path) throws IOException
+	{
+		Files.walkFileTree(path, new SimpleFileVisitor<Path>()
+		{
+			@Override
+			public FileVisitResult visitFile(Path file, BasicFileAttributes attrs)
+					throws IOException
+			{
+				Files.delete(file);
+				return FileVisitResult.CONTINUE;
+			}
+
+			@Override
+			public FileVisitResult visitFileFailed(Path file, IOException exc) throws IOException
+			{
+				// try to delete the file anyway, even if its attributes
+				// could not be read, since delete-only access is
+				// theoretically possible
+				Files.delete(file);
+				return FileVisitResult.CONTINUE;
+			}
+
+			@Override
+			public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException
+			{
+				if (exc == null)
+				{
+					Files.delete(dir);
+					return FileVisitResult.CONTINUE;
+				}
+				else
+				{
+					// directory iteration failed; propagate exception
+					throw exc;
+				}
+			}
+		});
+	}
+
+	public void cleanUp() {
+		final File[] files = Paths.get("").toAbsolutePath().toFile().listFiles(new VersionFilter());
+		final ArrayList<File> fileList = new ArrayList<>(Arrays.asList(files));
+		Collections.sort(fileList, new Comparator<File>() {
+
+			private VersionComparator comparator;
+
+			@Override
+			public int compare(final File o1, final File o2) {
+				if (null == comparator) {
+					comparator = new VersionComparator();
+				}
+				return comparator.compareVersionStrings(o1.getName(), o2.getName());
+			}
+		});
+
+		fileList.remove(fileList.size()-1);
+		fileList.remove(fileList.size()-1);
+
+		for(File file : fileList) {
+			File dataFile = new File(dataDir + "/" + file.getName());
+			System.out.println(file.getAbsolutePath());
+			System.out.println(dataFile.getAbsolutePath());
+			try {
+				removeRecursive(file.toPath());
+				removeRecursive(dataFile.toPath());
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+
+		}
 	}
 
 	enum Event {
@@ -122,7 +193,7 @@ public class Repository {
 		fireEvent(Repository.Event.UNZIP, null);
 		for (final Version version : versions) {
 			upgradeVersion(version, directory);
-			migrateVersion(version, directory);
+			migrateVersion(version, directory, versions.get(versions.size()-1).getVersion());
 		}
 
 		fireEvent(Repository.Event.DONE, null);
@@ -179,9 +250,9 @@ public class Repository {
 		}
 
 		final URL zipPackage = URI.create(version.getPackageName()).toURL();
-		final URLConnection conection = zipPackage.openConnection();
-		conection.connect();
-		final int lenghtOfFile = conection.getContentLength();
+		final URLConnection connection = zipPackage.openConnection();
+		connection.connect();
+		final int lengthOfFile = connection.getContentLength();
 		try (final InputStream input = new BufferedInputStream(zipPackage.openStream(), 8192);
 			 final OutputStream output = new FileOutputStream(file)) {
 			int total = 0;
@@ -189,18 +260,19 @@ public class Repository {
 			int count;
 			while (-1 != (count = input.read(data))) {
 				total += count;
-				fireEvent(Repository.Event.DOWNLOAD_PROGRESS, total / (double) lenghtOfFile);
+				fireEvent(Repository.Event.DOWNLOAD_PROGRESS, total / (double) lengthOfFile);
 				output.write(data, 0, count);
 			}
 			output.flush();
 		}
 	}
 
-	private void migrateVersion(final Version version, final File directory) throws InterruptedException {
+	private void migrateVersion(final Version version, final File directory, final String newVersion) throws InterruptedException {
 		final File file = new File(String.format("%s/migrations/%s.jar", directory, version.getVersion()));
 		if (file.exists()) {
 			fireEvent(Repository.Event.MIGRATION, version.getVersion());
-			final Process process = forkJarProcess(file.getAbsolutePath());
+
+			final Process process = forkJarProcess(file.getAbsolutePath() + " " + newVersion);
 			final int exitCode = process.waitFor();
 			if (0 != exitCode) {
 				LOGGER.error("Migration failed with exit code {}", exitCode);
