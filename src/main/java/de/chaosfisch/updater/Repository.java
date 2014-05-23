@@ -173,9 +173,7 @@ public class Repository {
 	}
 
 	public void upgradeInstallation(final List<Version> versions) throws IOException, InterruptedException {
-		for (final RepositoryListener listener : listeners) {
-			unZip.addListener(listener);
-		}
+		listeners.forEach(unZip::addListener);
 
 		fireEvent(Repository.Event.DOWNLOAD_START, versions.size());
 

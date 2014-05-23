@@ -43,12 +43,9 @@ public class Launcher {
 	}
 
 	private void startUpdater() {
-		final Thread thread = new Thread(new Runnable() {
-			@Override
-			public void run() {
-				GUI.setLauncher(Launcher.this);
-				Application.launch(GUI.class, dataDir, appDir, currentVersion);
-			}
+		final Thread thread = new Thread(() -> {
+			GUI.setLauncher(Launcher.this);
+			Application.launch(GUI.class, dataDir, appDir, currentVersion);
 		});
 		thread.start();
 	}

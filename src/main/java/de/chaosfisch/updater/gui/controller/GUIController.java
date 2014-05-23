@@ -58,36 +58,27 @@ public class GUIController {
 
 	@FXML
 	public void updateApplication(final ActionEvent event) {
-		Platform.runLater(new Runnable() {
-			@Override
-			public void run() {
-				updateButton.setDisable(true);
-				checkLaterButton.setDisable(true);
-				skipButton.setDisable(true);
-			}
+		Platform.runLater(() -> {
+			updateButton.setDisable(true);
+			checkLaterButton.setDisable(true);
+			skipButton.setDisable(true);
 		});
 
-		final Thread thread = new Thread(new Runnable() {
-			@Override
-			public void run() {
-				try {
-					launcher.getRepository().upgradeInstallation(launcher.getVersions());
-					launcher.getRepository().cleanUp();
-					launcher.startVersion(launcher.getVersions().get(launcher.getVersions().size() - 1).getVersion());
-					System.exit(0);
-				} catch (Exception e) {
-					LOGGER.error("Exception", e);
-					Platform.runLater(new Runnable() {
-						@Override
-						public void run() {
-							statusLabel.setText("Error occurred - see updaterlog.html");
-							progressBar.setProgress(1);
-							final ColorAdjust adjust = new ColorAdjust();
-							adjust.setHue(0.85);
-							progressBar.setEffect(adjust);
-						}
-					});
-				}
+		final Thread thread = new Thread(() -> {
+			try {
+				launcher.getRepository().upgradeInstallation(launcher.getVersions());
+				launcher.getRepository().cleanUp();
+				launcher.startVersion(launcher.getVersions().get(launcher.getVersions().size() - 1).getVersion());
+				System.exit(0);
+			} catch (Exception e) {
+				LOGGER.error("Exception", e);
+				Platform.runLater(() -> {
+					statusLabel.setText("Error occurred - see updaterlog.html");
+					progressBar.setProgress(1);
+					final ColorAdjust adjust = new ColorAdjust();
+					adjust.setHue(0.85);
+					progressBar.setEffect(adjust);
+				});
 			}
 		});
 		thread.setDaemon(true);
@@ -124,12 +115,7 @@ public class GUIController {
 
 		@Override
 		public void unzipFile(final String fileName) {
-			Platform.runLater(new Runnable() {
-				@Override
-				public void run() {
-					statusLabel.setText(String.format("Unpacking %s.", fileName));
-				}
-			});
+			Platform.runLater(() -> statusLabel.setText(String.format("Unpacking %s.", fileName)));
 		}
 
 		@Override
@@ -139,33 +125,22 @@ public class GUIController {
 
 		@Override
 		public void unzipEnd(final String fileName) {
-			Platform.runLater(new Runnable() {
-				@Override
-				public void run() {
-					statusLabel.setText(String.format("Unzipping %s done.", fileName));
-				}
-			});
+			Platform.runLater(() -> statusLabel.setText(String.format("Unzipping %s done.", fileName)));
 		}
 
 		@Override
 		public void unzipStart(final String fileName) {
-			Platform.runLater(new Runnable() {
-				@Override
-				public void run() {
-					currentFile++;
-					statusLabel.setText(String.format("Unzipping %s...", fileName));
-				}
+			Platform.runLater(() -> {
+				currentFile++;
+				statusLabel.setText(String.format("Unzipping %s...", fileName));
 			});
 		}
 
 		@Override
 		public void backup() {
-			Platform.runLater(new Runnable() {
-				@Override
-				public void run() {
-					statusLabel.setText("Creating backups");
-					progressBar.setProgress(-1);
-				}
+			Platform.runLater(() -> {
+				statusLabel.setText("Creating backups");
+				progressBar.setProgress(-1);
 			});
 		}
 
@@ -173,22 +148,14 @@ public class GUIController {
 		public void unzip() {
 			currentFile = 0;
 
-			Platform.runLater(new Runnable() {
-				@Override
-				public void run() {
-					progressBar.setProgress(0);
-				}
-			});
+			Platform.runLater(() -> progressBar.setProgress(0));
 		}
 
 		@Override
 		public void downloadFile(final String fileName) {
-			Platform.runLater(new Runnable() {
-				@Override
-				public void run() {
-					currentFile++;
-					statusLabel.setText(String.format("Downloading %s.", fileName));
-				}
+			Platform.runLater(() -> {
+				currentFile++;
+				statusLabel.setText(String.format("Downloading %s.", fileName));
 			});
 		}
 
@@ -202,41 +169,21 @@ public class GUIController {
 			this.fileCount = fileCount;
 			currentFile = 0;
 
-			Platform.runLater(new Runnable() {
-				@Override
-				public void run() {
-					progressBar.setProgress(0);
-				}
-			});
+			Platform.runLater(() -> progressBar.setProgress(0));
 		}
 
 		@Override
 		public void done() {
-			Platform.runLater(new Runnable() {
-				@Override
-				public void run() {
-					statusLabel.setText("Update successful!");
-				}
-			});
+			Platform.runLater(() -> statusLabel.setText("Update successful!"));
 		}
 
 		@Override
 		public void migration(final String version) {
-			Platform.runLater(new Runnable() {
-				@Override
-				public void run() {
-					statusLabel.setText(String.format("Migrating from version %s!", version));
-				}
-			});
+			Platform.runLater(() -> statusLabel.setText(String.format("Migrating from version %s!", version)));
 		}
 
 		private void progress(final double data) {
-			Platform.runLater(new Runnable() {
-				@Override
-				public void run() {
-					progressBar.setProgress((currentFile - 1) / fileCount + 1 / fileCount * data);
-				}
-			});
+			Platform.runLater(() -> progressBar.setProgress((currentFile - 1) / fileCount + 1 / fileCount * data));
 		}
 	}
 }
