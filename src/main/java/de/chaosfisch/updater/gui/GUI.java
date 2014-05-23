@@ -9,6 +9,7 @@ import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.JavaFXBuilderFactory;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
@@ -57,23 +58,18 @@ public class GUI extends Application {
 				controller.setReleaseNotes(generateReleaseNotes().toString());
 				controller.setLauncher(launcher);
 				final GridPane root = fxmlLoader.getRoot();
-				final Undecorator undecorator = new Undecorator(stage, root, "/de/chaosfisch/updater/view/Decoration.fxml", StageStyle.UTILITY);
-				undecorator.getStylesheets().add("skin/undecorator.css");
-				undecorator.getStylesheets().add("/de/chaosfisch/updater/resources/undecorator.css");
-				final Scene scene = new Scene(undecorator, 600.0, 700.0);
+				final Scene scene = new Scene(root, 500.0, 400.0);
 				root.toFront();
 
 				// Transparent scene and stage
-				scene.setFill(Color.TRANSPARENT);
-				stage.initStyle(StageStyle.TRANSPARENT);
 
 				// Set minimum size
-				stage.setMinWidth(600.0);
-				stage.setMinHeight(700.0);
+				stage.setMinWidth(500.0);
+				stage.setMinHeight(400.0);
 
-				stage.setTitle("No title bar");
+				stage.setTitle("Simple Java YouTube Uploader Updater");
+				stage.getIcons().add(new Image(getClass().getResourceAsStream("/de/chaosfisch/uploader/resources/images/film.png")));
 				stage.setScene(scene);
-
 				stage.show();
 			}
 		});
