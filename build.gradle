@@ -12,23 +12,15 @@ def javaFxHome = System.getProperty("java.home");
 
 apply plugin: 'java'
 apply plugin: 'application'
-sourceCompatibility = 1.7
-targetCompatibility = 1.7
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
 version = "0.5";
 mainClassName = 'de.chaosfisch.updater.Launcher'
-
-configurations {
-    //we do not want to have jfxrt.jar in the classpath when creating the jar,
-    //therefore a seperate configuration is required
-    providedCompile
-}
 
 dependencies {
     compile 'ch.qos.logback:logback-classic:+', 'com.google.code.gson:gson:+',
             'com.google.guava:guava:+'
     compile files('lib/Undecorator.jar')
-
-    providedCompile files("$javaFxHome/lib/jfxrt.jar")
 }
 
 repositories {
@@ -36,12 +28,6 @@ repositories {
     maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
     maven { url "http://maven.mashape.com/releases" }
     maven { url "https://repo.eclipse.org/content/groups/releases" }
-}
-
-
-compileJava {
-    //add required JavaFX libs to compile classpath
-    sourceSets.main.compileClasspath += configurations.providedCompile
 }
 
 jar {
@@ -90,6 +76,11 @@ task distribute(type: Zip) {
         from(project.configurations.runtime)
     }
 }
+
+task wrapper(type: Wrapper) {
+	gradleVersion = '1.11'
+}
+
 
 distribute.dependsOn launch4j
 distribute.dependsOn javaFXPackager
