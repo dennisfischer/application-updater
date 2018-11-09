@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 Dennis Fischer.
+ * Copyright (c) 2018 Dennis Fischer.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the GNU Public License v3.0+
  * which accompanies this distribution, and is available at
@@ -8,19 +8,35 @@
  * Contributors: Dennis Fischer
  */
 
-def javaFxHome = System.getProperty("java.home");
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.google.gradle:osdetector-gradle-plugin:1.6.0'
+    }
+}
+
+apply plugin: 'application'
+apply plugin: 'com.google.osdetector'
+apply plugin: 'idea'
+
+ext.platform = osdetector.os == 'osx' ? 'mac' : osdetector.os == 'windows' ? 'win' : osdetector.os
 
 apply plugin: 'java'
 apply plugin: 'application'
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
-version = "0.6";
+version = "0.6"
 mainClassName = 'de.chaosfisch.updater.Launcher'
 
 dependencies {
-    compile 'ch.qos.logback:logback-classic:+', 'com.google.code.gson:gson:+',
-            'com.google.guava:guava:+'
-    compile files('lib/Undecorator.jar')
+    implementation 'ch.qos.logback:logback-classic:+'
+    implementation 'com.google.code.gson:gson:+'
+    implementation 'com.google.guava:guava:19.0'
+    implementation "org.openjfx:javafx-base:11:$platform"
+    implementation "org.openjfx:javafx-graphics:11:$platform"
+    implementation "org.openjfx:javafx-controls:11:$platform"
+    implementation "org.openjfx:javafx-fxml:11:$platform"
+    implementation "org.openjfx:javafx-web:11:$platform"
 }
 
 repositories {
@@ -40,48 +56,3 @@ task launch4j(type: Exec) {
     workingDir file("$buildDir/launch4j")
     commandLine 'C:/Program Files (x86)/Launch4j/launch4jc.exe', file('/launch4j.xml')
 }
-
-
-task javaFXPackager(type: Exec) {
-    commandLine = [
-			"$javaFxHome/../bin/javafxpackager",
-            '-createjar',
-            '-srcdir',
-            sourceSets.main.output.classesDir,
-            '-outdir',
-            jar.destinationDir,
-            '-outfile',
-            jar.archiveName,
-            '-appclass',
-            mainClassName,
-            '-nocss2bin',
-            '-classpath',
-            configurations.runtime.collect { "lib/" + it.name }.join(' '),
-            '-manifestAttrs',
-            'Implementation-Title=Updater ' + version + ',Implementation-Version=' + version + ',Implementation-Vendor=Dennis Fischer aka CHAOSFISCH,' +
-                    'Built-By=' + System.getProperty('user.name') + ',Built-Date=' + new Date() + ',Built-JDK=' + System.getProperty('java.version')
-    ]
-}
-
-task copyTask(type: Copy) {
-    from sourceSets.main.output.resourcesDir
-    into sourceSets.main.output.classesDir
-}
-
-task distribute(type: Zip) {
-    baseName 'updater'
-    from(jar)
-    from("$buildDir/launch4j")
-    into("lib") {
-        from(project.configurations.runtime)
-    }
-}
-
-task wrapper(type: Wrapper) {
-	gradleVersion = '1.11'
-}
-
-
-distribute.dependsOn launch4j
-distribute.dependsOn javaFXPackager
-javaFXPackager.dependsOn copyTask

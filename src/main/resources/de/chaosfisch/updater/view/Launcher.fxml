@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.web.WebView?>
 <?import java.net.URL?>
-<GridPane alignment="TOP_LEFT" hgap="5.0" minHeight="-1.0" snapToPixel="true" vgap="5.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
+<GridPane hgap="5.0" vgap="5.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
           fx:controller="de.chaosfisch.updater.gui.controller.GUIController">
     <columnConstraints>
         <ColumnConstraints hgrow="SOMETIMES"/>
@@ -17,15 +17,15 @@
         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
     </padding>
     <rowConstraints>
-        <RowConstraints maxHeight="-1.0" prefHeight="-1.0" vgrow="SOMETIMES"/>
+        <RowConstraints vgrow="SOMETIMES"/>
         <RowConstraints maxHeight="-Infinity" vgrow="SOMETIMES"/>
-        <RowConstraints maxHeight="-Infinity" prefHeight="-1.0" vgrow="SOMETIMES"/>
-        <RowConstraints maxHeight="-Infinity" prefHeight="-1.0" vgrow="SOMETIMES"/>
+        <RowConstraints maxHeight="-Infinity" vgrow="SOMETIMES"/>
+        <RowConstraints maxHeight="-Infinity" vgrow="SOMETIMES"/>
     </rowConstraints>
     <stylesheets>
         <URL value="@../resources/style.css"/>
     </stylesheets>
-    <ProgressBar fx:id="progressBar" disable="false" maxWidth="1.7976931348623157E308" opacity="1.0" progress="0.0" GridPane.columnIndex="0"
+    <ProgressBar fx:id="progressBar" maxWidth="1.7976931348623157E308" progress="0.0" GridPane.columnIndex="0"
                  GridPane.columnSpan="2147483647" GridPane.rowIndex="2"/>
     <Button fx:id="updateButton" defaultButton="true" mnemonicParsing="false" onAction="#updateApplication" text="Update Now" GridPane.columnIndex="1"
             GridPane.rowIndex="3"/>
@@ -34,5 +34,5 @@
     <WebView fx:id="details" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="0" GridPane.columnSpan="2147483647" GridPane.rowIndex="0"/>
     <Button fx:id="skipButton" disable="true" mnemonicParsing="false" onAction="#skipUpdate" text="Skip Update" visible="false" GridPane.columnIndex="3"
             GridPane.rowIndex="3"/>
-    <Label fx:id="statusLabel" text="" GridPane.columnIndex="0" GridPane.columnSpan="2147483647" GridPane.rowIndex="1"/>
+    <Label fx:id="statusLabel" GridPane.columnIndex="0" GridPane.columnSpan="2147483647" GridPane.rowIndex="1"/>
 </GridPane>

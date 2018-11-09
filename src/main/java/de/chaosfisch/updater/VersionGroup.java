@@ -22,7 +22,7 @@ public class VersionGroup {
 	}
 
 	public List<Version> getNewerThan(final Version current) {
-		Collections.sort(versions, new VersionComparator());
+		versions.sort(new VersionComparator());
 
 		if (versions.contains(current)) {
 			return versions.subList(versions.indexOf(current) + 1, versions.size());

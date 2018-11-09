@@ -25,9 +25,9 @@ class VersionComparator implements Comparator<Version> {
 
 		if (i < lengthVersion1 && i < lengthVersion2) {
 			final int diff = Integer.valueOf(vals1[i]).compareTo(Integer.valueOf(vals2[i]));
-			return 0 > diff ? -1 : 0 == diff ? 0 : 1;
+			return Integer.compare(diff, 0);
 		}
 
-		return lengthVersion1 < lengthVersion2 ? -1 : lengthVersion1 == lengthVersion2 ? 0 : 1;
+		return Integer.compare(lengthVersion1, lengthVersion2);
 	}
 }

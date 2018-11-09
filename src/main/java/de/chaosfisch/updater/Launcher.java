@@ -123,11 +123,14 @@ public class Launcher {
 
 	private static String getCurrrent() {
 		final File[] files = Paths.get("").toAbsolutePath().toFile().listFiles(new VersionFilter());
+		if (files == null) {
+			return "v3.0.0.0";
+		}
 		final List<File> fileList = Arrays.asList(files);
 		if (fileList.isEmpty()) {
 			return "v3.0.0.0";
 		}
-		Collections.sort(fileList, new Comparator<File>() {
+		fileList.sort(new Comparator<>() {
 
 			private VersionComparator comparator;
 
